@@ -55,20 +55,20 @@ describe('TaskList Component', () => {
     expect(noTaskMessage).toBeInTheDocument();
   });
 
-  test('marks a task as completed', () => {
+  test('marks a specific task as completed', () => {
     render(<TaskList tasks={tasks} />);
-    const completeButton = screen.getByRole('button', { name: /complete/i });
-    fireEvent.click(completeButton);
+    const completeButtons = screen.getAllByRole('button', { name: /complete/i });
+    fireEvent.click(completeButtons[0]); // Completes Task 1
     const completedTask = screen.getByText(/task 1/i);
     expect(completedTask).toHaveClass('completed'); // Jest-DOM matcher
   });
 
-  test('deletes a task', () => {
+  test('deletes a specific task', () => {
     render(<TaskList tasks={tasks} />);
-    const deleteButton = screen.getByRole('button', { name: /delete/i });
-    fireEvent.click(deleteButton);
+    const deleteButtons = screen.getAllByRole('button', { name: /delete/i });
+    fireEvent.click(deleteButtons[0]); // Deletes Task 1
     const items = screen.getAllByRole('listitem');
-    expect(items.length).toBe(1); // The task list should decrease by 1
+    expect(items.length).toBe(tasks.length - 1); // The task list should decrease by 1
   });
 });
 
@@ -138,8 +138,8 @@ describe('App Component (Integration)', () => {
     const addButton = screen.getByRole('button', { name: /add task/i });
     fireEvent.change(input, { target: { value: 'New Task' } });
     fireEvent.click(addButton);
-    const completeButton = screen.getByRole('button', { name: /complete/i });
-    fireEvent.click(completeButton);
+    const completeButton = screen.getAllByRole('button', { name: /complete/i });
+    fireEvent.click(completeButton[0]); // Completes the first added task
     const completedTask = screen.getByText(/new task/i);
     expect(completedTask).toHaveClass('completed'); // Jest-DOM matcher
   });
@@ -162,8 +162,8 @@ describe('App Component (Integration)', () => {
     const addButton = screen.getByRole('button', { name: /add task/i });
     fireEvent.change(input, { target: { value: 'Task to Delete' } });
     fireEvent.click(addButton);
-    const deleteButton = screen.getByRole('button', { name: /delete/i });
-    fireEvent.click(deleteButton);
+    const deleteButton = screen.getAllByRole('button', { name: /delete/i });
+    fireEvent.click(deleteButton[0]); // Deletes the first added task
     const taskItem = screen.queryByText(/task to delete/i);
     expect(taskItem).not.toBeInTheDocument(); // Jest-DOM matcher
   });
